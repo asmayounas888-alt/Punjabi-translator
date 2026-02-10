@@ -1,43 +1,58 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { api, type TranslationResponse, type TranslationHistoryList } from "@shared/routes";
-import { z } from "zod";
+import { type TranslationResponse } from "@shared/routes";
+import { type Translation } from "@shared/schema";
+import { translateLocal } from "@/lib/translator";
+
+const STORAGE_KEY = "translation_history";
+
+function getLocalHistory(): Translation[] {
+  const stored = localStorage.getItem(STORAGE_KEY);
+  return stored ? JSON.parse(stored) : [];
+}
+
+function saveToLocalHistory(item: Translation) {
+  const history = getLocalHistory();
+  const updated = [item, ...history].slice(0, 50);
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+}
 
 export function useHistory() {
   return useQuery({
-    queryKey: [api.history.list.path],
+    queryKey: ["history"],
     queryFn: async () => {
-      const res = await fetch(api.history.list.path, { credentials: "include" });
-      if (!res.ok) throw new Error("Failed to fetch translation history");
-      return api.history.list.responses[200].parse(await res.json());
+      return getLocalHistory();
     },
   });
 }
 
 export function useTranslate() {
   const queryClient = useQueryClient();
-  
-  return useMutation({
-    mutationFn: async (data: z.infer<typeof api.translate.submit.input>) => {
-      const validated = api.translate.submit.input.parse(data);
-      const res = await fetch(api.translate.submit.path, {
-        method: api.translate.submit.method,
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(validated),
-        credentials: "include",
-      });
 
-      if (!res.ok) {
-        if (res.status === 400) {
-          const error = api.translate.submit.responses[400].parse(await res.json());
-          throw new Error(error.message);
-        }
-        throw new Error("Translation failed");
-      }
-      
-      return api.translate.submit.responses[200].parse(await res.json());
+  return useMutation({
+    mutationFn: async (data: { text: string; targetLanguage: "english" | "urdu" }) => {
+      const { translation, detectedLanguage } = translateLocal(data.text, data.targetLanguage);
+
+      const result: TranslationResponse = {
+        translation,
+        detectedLanguage,
+        originalText: data.text,
+      };
+
+      const historyItem: Translation = {
+        id: Date.now(),
+        sourceText: data.text,
+        translatedText: translation,
+        sourceLang: detectedLanguage,
+        targetLang: data.targetLanguage,
+        createdAt: new Date().toISOString() as any,
+      };
+
+      saveToLocalHistory(historyItem);
+
+      return result;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [api.history.list.path] });
+      queryClient.invalidateQueries({ queryKey: ["history"] });
     },
   });
 }
