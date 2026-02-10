@@ -1,32 +1,55 @@
-import { Languages, Info } from "lucide-react";
+import {
+  Languages,
+  Menu,
+  Linkedin,
+  Twitter,
+  Github,
+  Cpu
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 export function Header() {
   return (
-    <header className="w-full bg-gradient-to-br from-indigo-500 to-purple-600 shadow-xl shadow-purple-900/10 text-white py-8 md:py-12 relative overflow-hidden">
-      {/* Decorative background circles */}
-      <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
-      <div className="absolute bottom-0 left-0 w-48 h-48 bg-black/10 rounded-full blur-2xl translate-y-1/2 -translate-x-1/2" />
-      
-      <div className="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <div className="p-2.5 bg-white/20 backdrop-blur-sm rounded-xl border border-white/20 shadow-inner">
-              <Languages className="w-8 h-8 text-white" />
-            </div>
-            <div>
-              <h1 className="text-2xl md:text-3xl font-display font-bold text-white tracking-tight">
-                PunjabSync Translator
-              </h1>
-              <p className="text-white/80 text-sm md:text-base font-medium">
-                Seamless Punjabi Translation
-              </p>
-            </div>
+    <header className="fixed top-0 left-0 w-full z-50 transition-all duration-300">
+      <div className="absolute inset-0 bg-background/40 backdrop-blur-md border-b border-white/5" />
+
+      <div className="container max-w-7xl mx-auto px-4 h-20 flex items-center justify-between relative z-10">
+        <div className="flex items-center gap-4 group">
+          <div className="w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center text-primary glow-primary group-hover:rotate-12 transition-transform">
+            <Cpu className="w-5 h-5" />
           </div>
-          
-          <div className="hidden md:flex items-center gap-2 px-4 py-2 bg-white/10 rounded-full border border-white/10 backdrop-blur-sm text-sm font-medium text-white/90">
-            <Info className="w-4 h-4" />
-            <span>Support for Gurmukhi & Shahmukhi</span>
+          <div className="flex flex-col">
+            <span className="text-lg font-black tracking-tighter uppercase leading-none">Aasma Younas</span>
+            <span className="text-[10px] font-black text-primary/60 tracking-[0.2em] uppercase">NLP Research</span>
           </div>
+        </div>
+
+        <nav className="hidden md:flex items-center gap-10">
+          {["The Engine", "Research", "Experience", "Contact"].map((item) => (
+            <a
+              key={item}
+              href={`#${item.toLowerCase().replace(' ', '-')}`}
+              className="text-xs font-black uppercase tracking-widest text-muted-foreground hover:text-white transition-colors"
+            >
+              {item}
+            </a>
+          ))}
+        </nav>
+
+        <div className="flex items-center gap-3">
+          <div className="hidden sm:flex items-center gap-2 pr-4 border-r border-white/10 mr-4">
+            {[Linkedin, Twitter, Github].map((Icon, i) => (
+              <a key={i} href="#" className="p-2 text-muted-foreground hover:text-primary transition-colors">
+                <Icon className="w-4 h-4" />
+              </a>
+            ))}
+          </div>
+          <Button size="sm" className="rounded-xl px-6 bg-white text-black font-black hover:bg-white/90">
+            HIRE ME
+          </Button>
+          <Button variant="ghost" size="icon" className="md:hidden rounded-xl bg-white/5">
+            <Menu className="w-5 h-5" />
+          </Button>
         </div>
       </div>
     </header>

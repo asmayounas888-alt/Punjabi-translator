@@ -1,5 +1,5 @@
 import { useHistory } from "@/hooks/use-translations";
-import { Clock, ArrowRight, Loader2 } from "lucide-react";
+import { Clock, ArrowRight, Loader2, Sparkles, Database } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 
 export function HistoryList() {
@@ -7,53 +7,66 @@ export function HistoryList() {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center p-8">
-        <Loader2 className="w-6 h-6 animate-spin text-primary" />
+      <div className="flex flex-col items-center justify-center p-20 gap-4">
+        <Loader2 className="w-10 h-10 animate-spin text-primary opacity-20" />
+        <p className="text-xs font-black uppercase text-white/10 tracking-widest">Loading Corpus Data</p>
       </div>
     );
   }
 
   if (!history || history.length === 0) {
     return (
-      <div className="text-center py-12 px-4 rounded-2xl bg-muted/30 border border-dashed border-border">
-        <div className="bg-muted w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4">
-          <Clock className="w-6 h-6 text-muted-foreground" />
+      <div className="text-center py-20 px-4 rounded-[2rem] border border-dashed border-white/10 glass-dark">
+        <div className="bg-white/5 w-16 h-16 rounded-3xl flex items-center justify-center mx-auto mb-6">
+          <Database className="w-8 h-8 text-white/10" />
         </div>
-        <h3 className="font-semibold text-lg text-foreground">No recent translations</h3>
-        <p className="text-muted-foreground text-sm">Your translation history will appear here.</p>
+        <h3 className="font-bold text-xl text-white mb-2">No data in local storage</h3>
+        <p className="text-muted-foreground text-sm max-w-xs mx-auto text-balance font-medium">
+          Start translating Gurmukhi text to populate your local transcription history.
+        </p>
       </div>
     );
   }
 
   return (
-    <div className="space-y-4">
-      <h2 className="text-xl font-bold flex items-center gap-2 text-foreground">
-        <Clock className="w-5 h-5 text-primary" />
-        Recent History
-      </h2>
-      
-      <div className="grid gap-3">
+    <div className="space-y-6">
+      <div className="grid gap-4">
         {history.map((item) => (
-          <div 
+          <div
             key={item.id}
-            className="group bg-card hover:bg-accent/5 rounded-xl border border-border/50 p-4 transition-all duration-200 hover:shadow-md hover:border-primary/20"
+            className="group glass p-6 rounded-3xl transition-all duration-500 hover:bg-white/[0.08] hover:-translate-y-1 relative overflow-hidden"
           >
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-2">
-              <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                <span className="bg-primary/10 text-primary px-2 py-0.5 rounded-full">{item.sourceLang || 'Auto'}</span>
-                <ArrowRight className="w-3 h-3" />
-                <span className="bg-secondary px-2 py-0.5 rounded-full text-foreground">{item.targetLang}</span>
+            <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:opacity-10 transition-opacity">
+              <Sparkles className="w-16 h-16 text-primary" />
+            </div>
+
+            <div className="flex flex-wrap items-center justify-between gap-4 mb-6 relative z-10">
+              <div className="flex items-center gap-3">
+                <div className="px-3 py-1 rounded-lg bg-primary/10 border border-primary/20 text-[10px] font-black text-primary uppercase tracking-widest">
+                  {item.sourceLang}
+                </div>
+                <ArrowRight className="w-3 h-3 text-white/20" />
+                <div className="px-3 py-1 rounded-lg bg-white/5 border border-white/10 text-[10px] font-black text-muted-foreground uppercase tracking-widest">
+                  {item.targetLang}
+                </div>
               </div>
-              <span className="text-xs text-muted-foreground font-medium">
+              <span className="text-[10px] font-bold text-muted-foreground tracking-widest uppercase">
                 {item.createdAt && formatDistanceToNow(new Date(item.createdAt), { addSuffix: true })}
               </span>
             </div>
-            
-            <div className="grid sm:grid-cols-2 gap-4">
-              <p className="text-foreground/90 font-medium line-clamp-2">{item.sourceText}</p>
-              <div className="flex gap-2">
-                <ArrowRight className="w-4 h-4 text-muted-foreground/50 mt-1 shrink-0 hidden sm:block" />
-                <p className="text-primary font-medium line-clamp-2">{item.translatedText}</p>
+
+            <div className="grid md:grid-cols-2 gap-8 relative z-10">
+              <div className="space-y-2">
+                <p className="text-xs font-black text-white/20 uppercase tracking-widest">Origin</p>
+                <p className="text-lg font-bold text-muted-foreground line-clamp-3 leading-relaxed">
+                  {item.sourceText}
+                </p>
+              </div>
+              <div className="space-y-2">
+                <p className="text-xs font-black text-primary uppercase tracking-widest">Transliteration</p>
+                <p className="text-xl font-bold text-white line-clamp-3 leading-relaxed">
+                  {item.translatedText}
+                </p>
               </div>
             </div>
           </div>
