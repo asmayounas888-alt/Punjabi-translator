@@ -99,11 +99,11 @@ export default function Home() {
         <section id="tool" className="mb-32 animate-fade-in-up delay-100">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold mb-4 flex items-center justify-center gap-3">
-              Punjabi Semantic Engine
-              <span className="text-[10px] bg-primary/20 text-primary px-2 py-0.5 rounded-full border border-primary/30 uppercase tracking-tighter">v11.0 Neural AI Live</span>
+              Punjabi Neural Engine
+              <span className="text-[10px] bg-green-500 text-white px-3 py-1 rounded-full animate-pulse uppercase tracking-widest font-black">v11.0 Neural AI Active</span>
             </h2>
-            <p className="text-muted-foreground max-w-xl mx-auto">
-              Proper Simple English & Natural Urdu extraction using Neural AI Models.
+            <p className="text-white font-medium max-w-xl mx-auto bg-green-500/10 py-2 px-4 rounded-full border border-green-500/20">
+              ✓ Google-Quality Simple English & Natural Urdu Engine is now LIVE.
             </p>
           </div>
 
