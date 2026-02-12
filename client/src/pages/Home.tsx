@@ -98,9 +98,9 @@ export default function Home() {
         {/* THE TOOL SECTION */}
         <section id="tool" className="mb-32 animate-fade-in-up delay-100">
           <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">Punjabi Transliteration Engine</h2>
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">Punjabi Semantic Engine</h2>
             <p className="text-muted-foreground max-w-xl mx-auto">
-              A high-precision real-time transliteration tool designed to convert Gurmukhi and Shahmukhi scripts into English and Urdu with semantic awareness.
+              A high-precision real-time engine designed to extract semantic meaning from Gurmukhi and Shahmukhi scripts into simple English and Urdu.
             </p>
           </div>
 
@@ -169,7 +169,7 @@ export default function Home() {
                 <div className="mesh-bg opacity-30" />
                 <div className="flex justify-between items-center mb-6 relative z-10">
                   <span className="text-xs font-black text-primary uppercase tracking-[0.2em]">
-                    Result ({targetLang})
+                    Meaning ({targetLang})
                   </span>
                   {lastTranslation && (
                     <button
