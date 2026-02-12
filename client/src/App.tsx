@@ -13,8 +13,8 @@ function AppRouter() {
   return (
     <Router base={base}>
       <Switch>
-        <Route path="/:rest*" component={Home} />
-        <Route component={NotFound} />
+        {/* Set Home as the absolute default for any path */}
+        <Route component={Home} />
       </Switch>
     </Router>
   );
