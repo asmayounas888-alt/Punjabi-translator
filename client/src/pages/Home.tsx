@@ -100,7 +100,7 @@ export default function Home() {
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold mb-4 flex items-center justify-center gap-3">
               Punjabi Semantic Engine
-              <span className="text-[10px] bg-primary/20 text-primary px-2 py-0.5 rounded-full border border-primary/30 uppercase tracking-tighter">v9.0 Live</span>
+              <span className="text-[10px] bg-primary/20 text-primary px-2 py-0.5 rounded-full border border-primary/30 uppercase tracking-tighter">v10.1 Live</span>
             </h2>
             <p className="text-muted-foreground max-w-xl mx-auto">
               Deployment of Proper Simple English & Natural Urdu extraction for Shahmukhi and Gurmukhi scripts.
