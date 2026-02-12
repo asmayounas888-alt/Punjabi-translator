@@ -22,6 +22,7 @@ export default function Home() {
   const [lastTranslation, setLastTranslation] = useState<string | null>(null);
   const [transliteration, setTransliteration] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
+  const isEmbedded = typeof window !== "undefined" && (window.self !== window.top || new URLSearchParams(window.location.search).get('embed') === 'true');
 
   const { mutate: translate, isPending } = useTranslate();
   const { toast } = useToast();
@@ -99,35 +100,40 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-background text-foreground selection:bg-primary/30">
       <div className="mesh-bg" />
-      <Header />
+      {!isEmbedded && <Header />}
 
-      <main className="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-20 relative z-10">
+      <main className={cn(
+        "container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-20 relative z-10",
+        isEmbedded ? "pt-8" : "pt-24"
+      )}>
 
         {/* HERO SECTION */}
-        <section className="mb-32 text-center max-w-4xl mx-auto animate-fade-in-up">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-bold uppercase tracking-widest mb-6 glow-primary">
-            <Cpu className="w-3 h-3" />
-            Computational Linguistics Researcher
-          </div>
-          <h1 className="text-5xl md:text-7xl font-extrabold mb-6 tracking-tight">
-            Bridging Languages with <br />
-            <span className="text-gradient">Advanced NLP</span>
-          </h1>
-          <p className="text-xl text-muted-foreground leading-relaxed mb-10 max-w-2xl mx-auto font-medium">
-            I'm <span className="text-white font-bold">Aasma Younas</span>. I specialize in cross-script transliteration and neural machine translation, focusing on preserving the soul of South Asian languages through code.
-          </p>
-          <div className="flex flex-wrap justify-center gap-4">
-            <Button size="lg" className="rounded-full px-8 bg-primary hover:bg-primary/90 text-primary-foreground font-bold shadow-xl shadow-primary/20 transition-all hover:scale-105 active:scale-95">
-              Explore My Research
-            </Button>
-            <Button size="lg" variant="outline" className="rounded-full px-8 border-white/10 glass-dark hover:bg-white/5 font-bold transition-all hover:scale-105 active:scale-95" asChild>
-              <a href="mailto:asmayounas888@gmail.com">Contact Me</a>
-            </Button>
-          </div>
-        </section>
+        {!isEmbedded && (
+          <section className="mb-32 text-center max-w-4xl mx-auto animate-fade-in-up">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-bold uppercase tracking-widest mb-6 glow-primary">
+              <Cpu className="w-3 h-3" />
+              Computational Linguistics Researcher
+            </div>
+            <h1 className="text-5xl md:text-7xl font-extrabold mb-6 tracking-tight">
+              Bridging Languages with <br />
+              <span className="text-gradient">Advanced NLP</span>
+            </h1>
+            <p className="text-xl text-muted-foreground leading-relaxed mb-10 max-w-2xl mx-auto font-medium">
+              I'm <span className="text-white font-bold">Aasma Younas</span>. I specialize in cross-script transliteration and neural machine translation, focusing on preserving the soul of South Asian languages through code.
+            </p>
+            <div className="flex flex-wrap justify-center gap-4">
+              <Button size="lg" className="rounded-full px-8 bg-primary hover:bg-primary/90 text-primary-foreground font-bold shadow-xl shadow-primary/20 transition-all hover:scale-105 active:scale-95">
+                Explore My Research
+              </Button>
+              <Button size="lg" variant="outline" className="rounded-full px-8 border-white/10 glass-dark hover:bg-white/5 font-bold transition-all hover:scale-105 active:scale-95" asChild>
+                <a href="mailto:asmayounas888@gmail.com">Contact Me</a>
+              </Button>
+            </div>
+          </section>
+        )}
 
         {/* THE TOOL SECTION */}
-        <section id="tool" className="mb-32 animate-fade-in-up delay-100">
+        <section id="tool" className={cn("mb-32 animate-fade-in-up delay-100", isEmbedded ? "mt-0" : "mt-24")}>
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold mb-4 flex items-center justify-center gap-3">
               Punjabi Neural Engine
@@ -373,32 +379,34 @@ export default function Home() {
         </section>
 
         {/* FOOTER / CONTACT */}
-        <footer className="mt-40 pt-20 border-t border-white/5 text-center">
-          <div className="flex justify-center gap-8 mb-10">
-            <a href="mailto:asmayounas888@gmail.com" className="text-muted-foreground hover:text-primary transition-colors">
-              <Mail className="w-6 h-6" />
-            </a>
-            <a
-              href="https://github.com/asmayounas888-alt"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-muted-foreground hover:text-primary transition-colors"
-            >
-              <Github className="w-6 h-6" />
-            </a>
-            <a
-              href="https://www.linkedin.com/in/aasma-younas-242891318"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-muted-foreground hover:text-primary transition-colors"
-            >
-              <Linkedin className="w-6 h-6" />
-            </a>
-          </div>
-          <p className="text-sm font-bold opacity-30 tracking-tighter uppercase">
-            © 2026 Aasma Younas · Designed for Computational Excellence
-          </p>
-        </footer>
+        {!isEmbedded && (
+          <footer className="mt-40 pt-20 border-t border-white/5 text-center">
+            <div className="flex justify-center gap-8 mb-10">
+              <a href="mailto:asmayounas888@gmail.com" className="text-muted-foreground hover:text-primary transition-colors">
+                <Mail className="w-6 h-6" />
+              </a>
+              <a
+                href="https://github.com/asmayounas888-alt"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-muted-foreground hover:text-primary transition-colors"
+              >
+                <Github className="w-6 h-6" />
+              </a>
+              <a
+                href="https://www.linkedin.com/in/aasma-younas-242891318"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-muted-foreground hover:text-primary transition-colors"
+              >
+                <Linkedin className="w-6 h-6" />
+              </a>
+            </div>
+            <p className="text-sm font-bold opacity-30 tracking-tighter uppercase">
+              © 2026 Aasma Younas · Designed for Computational Excellence
+            </p>
+          </footer>
+        )}
 
       </main>
     </div>
