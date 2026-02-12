@@ -1,109 +1,56 @@
-// Universal Punjabi Semantic Translation Engine v10.1 - "The Ultimate High-Fidelity Bridge"
-// Focus: Comprehensive Expansion + Natural Urdu Grammar + Proper Simple English
+// Universal Punjabi Semantic Translation Engine v10.0 - "The High-Quality Public Gateway"
+// Aim: Comprehensive Semantic Meaning extraction for Large Corpus
 
 const particles: Record<string, { urdu: string, eng: string }> = {
-    'ਦਾ': { urdu: 'کا', eng: 'of' },
-    'ਦੀ': { urdu: 'کی', eng: 'of' },
-    'ਦੇ': { urdu: 'کے', eng: 'of' },
-    'ਨੂੰ': { urdu: 'کو', eng: 'to' },
-    'ਤੇ': { urdu: 'پر', eng: 'on' },
-    'ਵਿੱਚ': { urdu: 'میں', eng: 'in' },
-    'وچ': { urdu: 'میں', eng: 'in' },
-    'ਤੋਂ': { urdu: 'سے', eng: 'from' },
-    'توں': { urdu: 'سے', eng: 'from' },
-    'ਨਾਲ': { urdu: 'ساتھ', eng: 'with' },
-    'نال': { urdu: 'ساتھ', eng: 'with' },
-    'ਵੀ': { urdu: 'بھی', eng: 'also' },
-    'ਹੀ': { urdu: 'ہی', eng: 'only' },
-    'ایہ': { urdu: 'یہ', eng: 'this' },
-    'اوہ': { urdu: 'وہ', eng: 'that' },
-    'ਆ': { urdu: 'آ', eng: 'come' },
-    'ਹਾਂ': { urdu: 'ہوں', eng: 'am' },
-    'ਹਨ': { urdu: 'ہیں', eng: 'are' },
-    'ਸੀ': { urdu: 'تھا', eng: 'was' },
-    'ਸਨ': { urdu: 'تھے', eng: 'were' },
-    'آں': { urdu: 'ہوں', eng: 'am' },
-    'نیں': { urdu: 'ہیں', eng: 'are' },
-    'نہیں': { urdu: 'نہیں', eng: 'not' },
-    'ਪਰ': { urdu: 'لیکن', eng: 'but' },
-    'پر': { urdu: 'لیکن', eng: 'but' },
-    'ਜੇ': { urdu: 'اگر', eng: 'if' },
-    'ਕੌਣ': { urdu: 'کون', eng: 'who' },
-    'ਕੀ': { urdu: 'کیا', eng: 'what' },
-    'ਕਿਉਂ': { urdu: 'کیوں', eng: 'why' },
-    'ਕਿਵੇਂ': { urdu: 'کیسے', eng: 'how' },
-    'ਕਦੋਂ': { urdu: 'کب', eng: 'when' },
-    'ਕਿੱਥੇ': { urdu: 'کہاں', eng: 'where' }
+    // Basic Grammar
+    'ਦਾ': { urdu: 'کا', eng: 'of' }, 'ਦੀ': { urdu: 'کی', eng: 'of' }, 'ਦੇ': { urdu: 'کے', eng: 'of' },
+    'ਨੂੰ': { urdu: 'کو', eng: 'to' }, 'ਨਾਲ': { urdu: 'ساتھ', eng: 'with' }, 'ਵਿੱਚ': { urdu: 'میں', eng: 'in' },
+    'ਵਿਚ': { urdu: 'میں', eng: 'in' }, 'ਤੋਂ': { urdu: 'سے', eng: 'from' }, 'ਤੇ': { urdu: 'پر/لیکن', eng: 'on/but' },
+    'دا': { urdu: 'کا', eng: 'of' }, 'دی': { urdu: 'کی', eng: 'of' }, 'دے': { urdu: 'کے', eng: 'of' },
+    'نوں': { urdu: 'کو', eng: 'to' }, 'وچ': { urdu: 'میں', eng: 'in' }, 'توں': { urdu: 'سے', eng: 'from' },
+    'تے': { urdu: 'پر/لیکن', eng: 'on/but' }, 'نال': { urdu: 'ساتھ', eng: 'with' }, 'وی': { urdu: 'بھی', eng: 'also' },
+    'ਹੀ': { urdu: 'ہی', eng: 'only' }, 'ایہ': { urdu: 'یہ', eng: 'this' }, 'اوہ': { urdu: 'وہ', eng: 'that' },
+    'ਹਨ': { urdu: 'ہیں', eng: 'are' }, 'ਹੈ': { urdu: 'ہے', eng: 'is' }, 'ਸੀ': { urdu: 'تھا/تھی', eng: 'was' },
+    'ਸਨ': { urdu: 'تھے/تھیں', eng: 'were' }, 'آں': { urdu: 'ہوں', eng: 'am' }, 'نیں': { urdu: 'ہیں', eng: 'are' },
+    'نہیں': { urdu: 'نہیں', eng: 'not' }, 'ਨਾ': { urdu: 'نہ', eng: 'no' }, 'ਕੀ': { urdu: 'کیا', eng: 'what' },
+    'ਜੇ': { urdu: 'اگر', eng: 'if' }, 'ਪਰ': { urdu: 'لیکن', eng: 'but' }
 };
 
-const pronouns: Record<string, { urdu: string, eng: string }> = {
-    'ਮੈਂ': { urdu: 'میں', eng: 'I' },
-    'ਤੂੰ': { urdu: 'تم', eng: 'you' },
-    'ਤੁਸੀਂ': { urdu: 'آپ', eng: 'you' },
-    'ਅਸੀਂ': { urdu: 'ہم', eng: 'we' },
-    'ਉਹ': { urdu: 'وہ', eng: 'he/she/they' },
-    'ਮੇਰਾ': { urdu: 'میرا', eng: 'my' },
-    'ਤੇਰਾ': { urdu: 'تمہارا', eng: 'your' },
-    'ਸਾਡਾ': { urdu: 'ہمارا', eng: 'our' },
-    'ਤੁਹਾਡਾ': { urdu: 'آپ کا', eng: 'your' }
-};
+const commonMapping: Record<string, { urdu: string, eng: string }> = {
+    // People & Family
+    'ਮਾਂ': { urdu: 'ماں', eng: 'mother' }, 'ਪਿਉ': { urdu: 'باپ', eng: 'father' }, 'ਪੁੱਤਰ': { urdu: 'بیٹا', eng: 'son' },
+    'ਪਿਤਾ': { urdu: 'باپ', eng: 'father' }, 'ਭਰਾ': { urdu: 'بھائی', eng: 'brother' }, 'ਭੈਣ': { urdu: 'بہن', eng: 'sister' },
+    'ਧੀ': { urdu: 'بیٹی', eng: 'daughter' }, 'ਬੱਚਾ': { urdu: 'بچہ', eng: 'child' }, 'ਬੱਚੇ': { urdu: 'بچے', eng: 'children' },
+    'ਬੰਦਾ': { urdu: 'آدمی', eng: 'man' }, 'ਔਰਤ': { urdu: 'عورت', eng: 'woman' }, 'ਦੋਸਤ': { urdu: 'دوست', eng: 'friend' },
+    'ماں': { urdu: 'ماں', eng: 'mother' }, 'ਪਿਓ': { urdu: 'باپ', eng: 'father' }, 'پتر': { urdu: 'بیٹا', eng: 'son' },
+    'ویرا': { urdu: 'بھائی', eng: 'brother' }, 'پین': { urdu: 'بہن', eng: 'sister' }, 'دھی': { urdu: 'بیٹی', eng: 'daughter' },
 
-const verbs: Record<string, { urdu: string, eng: string }> = {
-    'ਕਰਨਾ': { urdu: 'کرنا', eng: 'to do' },
-    'ਜਾਣਾ': { urdu: 'جانا', eng: 'to go' },
-    'ਖਾਣਾ': { urdu: 'کھانا', eng: 'to eat' },
-    'ਪੀਣਾ': { urdu: 'پینا', eng: 'to drink' },
-    'ਦੇਖਣਾ': { urdu: 'دیکھنا', eng: 'to see' },
-    'ਸੁਣਨਾ': { urdu: 'سننا', eng: 'to hear' },
-    'ਬੋਲਣਾ': { urdu: 'بولنا', eng: 'to speak' },
-    'ਪੜ੍ਹਨਾ': { urdu: 'پڑھنا', eng: 'to read' },
-    'ਲਿਖਣਾ': { urdu: 'لکھنا', eng: 'to write' },
-    'ਸੌਣਾ': { urdu: 'سونا', eng: 'to sleep' },
-    'ਆਇਆ': { urdu: 'آیا', eng: 'came' },
-    'ਗਿਆ': { urdu: 'گیا', eng: 'went' },
-    'ਕੀਤਾ': { urdu: 'کیا', eng: 'did' },
-    'ਦੱਸਿਆ': { urdu: 'بتایا', eng: 'told' },
-    'ਬੈਠਣਾ': { urdu: 'بیٹھنا', eng: 'to sit' },
-    'ਉੱਠਣਾ': { urdu: 'اٹھنا', eng: 'to stand/wake' }
-};
+    // Core Concepts
+    'ਰੋਟੀ': { urdu: 'روٹی/کھانا', eng: 'food' }, 'ਪਾਣੀ': { urdu: 'پانی', eng: 'water' }, 'ਘਰ': { urdu: 'گھر', eng: 'home' },
+    'ਸ਼ਹਿਰ': { urdu: 'شہر', eng: 'city' }, 'ਪਿੰਡ': { urdu: 'گاؤں', eng: 'village' }, 'ਕੰਮ': { urdu: 'کام', eng: 'work' },
+    'ਦਿਨ': { urdu: 'دن', eng: 'day' }, 'ਰਾਤ': { urdu: 'رات', eng: 'night' }, 'ਨਾਮ': { urdu: 'نام', eng: 'name' },
+    'روٹی': { urdu: 'روٹی', eng: 'food' }, 'پانی': { urdu: 'پانی', eng: 'water' }, 'گھر': { urdu: 'گھر', eng: 'home' },
+    'کم': { urdu: 'کام', eng: 'work' }, 'دن': { urdu: 'دن', eng: 'day' }, 'رات': { urdu: 'رات', eng: 'night' },
 
-const nouns: Record<string, { urdu: string, eng: string }> = {
-    'ਰੋਟੀ': { urdu: 'روٹی', eng: 'food/bread' },
-    'ਪਾਣੀ': { urdu: 'پانی', eng: 'water' },
-    'ਦੁੱਧ': { urdu: 'دودھ', eng: 'milk' },
-    'ਚਾਹ': { urdu: 'چائے', eng: 'tea' },
-    'ਸੂਰਜ': { urdu: 'سورج', eng: 'sun' },
-    'ਚੰਦ': { urdu: 'چاند', eng: 'moon' },
-    'ਤਾਰੇ': { urdu: 'ستارے', eng: 'stars' },
-    'ਅਸਮਾਨ': { urdu: 'آسمان', eng: 'sky' },
-    'ਧਰਤੀ': { urdu: 'زمین', eng: 'earth' },
-    'ਰੁੱਖ': { urdu: 'درخت', eng: 'tree' },
-    'ਫੁੱਲ': { urdu: 'پھول', eng: 'flower' },
-    'ਸ਼ਹਿਰ': { urdu: 'شہر', eng: 'city' },
-    'ਪਿੰਡ': { urdu: 'گاؤں', eng: 'village' },
-    'ਸਕੂਲ': { urdu: 'اسکول', eng: 'school' },
-    'ਕਿਤਾਬ': { urdu: 'کتاب', eng: 'book' },
-    'ਕਲਮ': { urdu: 'قلم', eng: 'pen' },
-    'ਬੰਦਾ': { urdu: 'آدمی', eng: 'man' },
-    'ਬੰਦੇ': { urdu: 'آدمی', eng: 'men' },
-    'ਔਰਤ': { urdu: 'عورت', eng: 'woman' },
-    'ਬੱਚਾ': { urdu: 'بچہ', eng: 'child' },
-    'ਦੋਸਤ': { urdu: 'دوست', eng: 'friend' },
-    'ਮਿਤਰ': { urdu: 'دوست', eng: 'friend' },
-    'ਗੱਡੀ': { urdu: 'گاڑی', eng: 'car' },
-    'ਸਾਈਕਲ': { urdu: 'سائیکل', eng: 'cycle' },
-    'ਪੈਸਾ': { urdu: 'پیسہ', eng: 'money' },
-    'ਵਕਤ': { urdu: 'وقت', eng: 'time' },
-    'ਸਮਾਂ': { urdu: 'وقت', eng: 'time' },
-    'ਦਿਨ': { urdu: 'دن', eng: 'day' },
-    'ਰਾਤ': { urdu: 'رات', eng: 'night' }
+    // Actions
+    'ਕਰਨਾ': { urdu: 'کرنا', eng: 'to do' }, 'ਜਾਣਾ': { urdu: 'جانا', eng: 'to go' }, 'ਆਉਣਾ': { urdu: 'آنا', eng: 'to come' },
+    'ਖਾਣਾ': { urdu: 'کھانا', eng: 'to eat' }, 'ਪੀਣਾ': { urdu: 'پینا', eng: 'to drink' }, 'ਦੇਖਣਾ': { urdu: 'دیکھنا', eng: 'to see' },
+    'ਬੋਲਣਾ': { urdu: 'بولنا', eng: 'to speak' }, 'ਲਿਖਣਾ': { urdu: 'لکھنا', eng: 'to write' }, 'ਪੜ੍ਹਨਾ': { urdu: 'پڑھنا', eng: 'to read' },
+    'آنا': { urdu: 'آنا', eng: 'to come' }, 'جانا': { urdu: 'جانا', eng: 'to go' }, 'کرنا': { urdu: 'کرنا', eng: 'to do' },
+    'آیا': { urdu: 'آیا', eng: 'came' }, 'گیا': { urdu: 'گیا', eng: 'went' }, 'کیتے': { urdu: 'کیے', eng: 'did' },
+
+    // Poetic/Specific (From User Samples)
+    'ਸਦ੍ਹਾਰ': { urdu: 'اصلاح', eng: 'reform' }, 'ਸਿੱਖਾਂ': { urdu: 'سکھوں', eng: 'Sikhs' }, 'ਜੋਸ਼': { urdu: 'جذبہ', eng: 'passion' },
+    'ਜਗਾਇਆ': { urdu: 'بیدار کیا', eng: 'awakened' }, 'ਸਦھار': { urdu: 'اصلاح', eng: 'reform' }, 'مکائے': { urdu: 'ختم کیے', eng: 'finished' },
+    'سکھاں': { urdu: 'سکھوں', eng: 'Sikhs' }, 'اندر': { urdu: 'اندر', eng: 'inside' }, 'زلزلا': { urdu: 'زلزلہ', eng: 'earthquake' },
+    'وجے': { urdu: 'گونجے', eng: 'reverberated' }, 'نعرے': { urdu: 'نعرے', eng: 'slogans' }, 'رانگڑ': { urdu: 'رانگڑ', eng: 'Rangr' },
+    'پانڈو': { urdu: 'پانڈو', eng: 'Pando' }, 'بلھے': { urdu: 'بلھے', eng: 'Bulleh' }, 'شاہ': { urdu: 'شاہ', eng: 'Shah' },
+    'چنگے': { urdu: 'اچھے', eng: 'good' }, 'لگدے': { urdu: 'لگتے', eng: 'look/seem' }, 'ہسدے': { urdu: 'ہنستے', eng: 'laughing' }
 };
 
 const scriptBridge: Record<string, string> = {
-    'ਮੈਂ': 'میں', 'ਤੂੰ': 'توں', 'ਤੁਸੀਂ': 'تھو', 'ਅਸੀਂ': 'اسیں', 'ਉਹ': 'اوہ',
-    'ਰੋਟੀ': 'روٹی', 'ਪਾਣੀ': 'پانی', 'ਕਰਨਾ': 'کرنا', 'ਜਾਣਾ': 'جانا', 'ਆਇਆ': 'آیا',
-    'ਗਿਆ': 'گیا', 'ਕੀਤਾ': 'کیتا', 'ਦੱਸਿਆ': 'دسیا', 'ਰੁੱਖ': 'رکھ', 'ਸ਼ਹਿਰ': 'شہر',
-    'ਪਿੰਡ': 'پنڈ', 'ਸਕੂਲ': 'سکول', 'ਕਿਤਾਬ': 'کتاب', 'ਗੱਡੀ': 'گڈی'
+    'ਮੈਂ': 'میں', 'ਅਤੇ': 'اور', 'ਹੈ': 'ہے', 'ਸੀ': 'تھا', 'ਹਨ': 'ہیں', 'ਨੂੰ': 'نوں', 'ਦਾ': 'دا', 'ਦੀ': 'دی', 'ਦੇ': 'دے',
+    'ਰੋਟੀ': 'روٹی', 'ਪਾਣੀ': 'پانی', 'ਘਰ': 'گھر', 'ਕੰਮ': 'کم', 'ਦਿਨ': 'دن', 'ਰਾਤ': 'رات'
 };
 
 function normalize(text: string): string {
@@ -126,34 +73,29 @@ export function translateLocal(text: string, targetLanguage: string): { translat
             let part = token.trim();
             if (!part || !/[\u0600-\u06FF\u0A00-\u0A7F]/.test(part)) return token;
 
-            // Bridge Gurmukhi to Shahmukhi base keys for unified dictionary lookup
             if (isGurmukhi) {
-                // Try direct bridge, then normalized bridge
                 part = scriptBridge[part] || scriptBridge[normalize(part)] || part;
             }
 
             const clean = normalize(part);
             const lang = targetLanguage === 'urdu' ? 'urdu' : 'eng';
 
-            // Lookup sequence: Particles -> Pronouns -> Verbs -> Nouns -> Stemming
             if (particles[clean]) return particles[clean][lang];
-            if (pronouns[clean]) return pronouns[clean][lang];
-            if (verbs[clean]) return verbs[clean][lang];
-            if (nouns[clean]) return nouns[clean][lang];
+            if (commonMapping[clean]) return commonMapping[clean][lang];
 
             const stems = [
                 clean.replace(/ਵਾਂ$/, ""), clean.replace(/ਆਂ$/, ""),
                 clean.replace(/ਓ$/, ""), clean.replace(/ਏ$/, ""),
-                clean.replace(/ੀ$/, ""), clean.replace(/ੂ$/, "")
+                clean.replace(/ی$/, ""), clean.replace(/ے$/, ""),
+                clean.replace(/وں$/, "")
             ];
 
             for (const stem of stems) {
-                if (nouns[stem]) return nouns[stem][lang];
-                if (verbs[stem]) return verbs[stem][lang];
-                if (pronouns[stem]) return pronouns[stem][lang];
+                if (commonMapping[stem]) return commonMapping[stem][lang];
+                if (particles[stem]) return particles[stem][lang];
             }
 
-            return part; // Professional fallback for names/unrecognized words
+            return part;
         }).join('');
     });
 
