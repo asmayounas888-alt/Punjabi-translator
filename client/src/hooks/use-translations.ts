@@ -10,28 +10,42 @@ export type Translation = {
   timestamp: number;
 };
 
-// AI Neural Translation Engine (Google Quality)
+// AI Neural Translation Engine (Massive Corpus Stream Processor)
 async function translateNeural(text: string, targetLanguage: string): Promise<string> {
   const target = targetLanguage === 'urdu' ? 'ur' : 'en';
-  // Detected script (Gurmukhi vs Shahmukhi)
-  const isGurmukhi = /[\u0A00-\u0A7F]/.test(text);
 
-  try {
-    const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=${target}&dt=t&q=${encodeURIComponent(text)}`;
-    const response = await fetch(url);
-    const data = await response.json();
+  // For massive files, we use a Parallel Stream Processing approach
+  const CHUNK_SIZE = 4000; // Optimal for Google GTX endpoint
+  const chunks: string[] = [];
 
-    // Extracting meaningful sentences from the neural response
-    if (data && data[0]) {
-      return data[0].map((sentence: any) => sentence[0]).join('');
-    }
-
-    // Fallback to our local high-fidelity engine if AI fails
-    return translateLocal(text, targetLanguage).translation;
-  } catch (error) {
-    console.error("Neural Translation Error:", error);
-    return translateLocal(text, targetLanguage).translation;
+  for (let i = 0; i < text.length; i += CHUNK_SIZE) {
+    chunks.push(text.substring(i, i + CHUNK_SIZE));
   }
+
+  // Process in parallel batches of 10 to maximize speed without hitting limits
+  const BATCH_SIZE = 10;
+  let finalTranslation = "";
+
+  for (let i = 0; i < chunks.length; i += BATCH_SIZE) {
+    const batch = chunks.slice(i, i + BATCH_SIZE);
+    const batchResults = await Promise.all(batch.map(async (chunk) => {
+      try {
+        const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=${target}&dt=t&q=${encodeURIComponent(chunk)}`;
+        const response = await fetch(url);
+        const data = await response.json();
+        if (data && data[0]) {
+          return data[0].map((sentence: any) => sentence[0]).join('');
+        }
+        return "";
+      } catch (err) {
+        console.warn("Chunk error, falling back to local for this segment");
+        return translateLocal(chunk, targetLanguage).translation;
+      }
+    }));
+    finalTranslation += batchResults.join('');
+  }
+
+  return finalTranslation || translateLocal(text, targetLanguage).translation;
 }
 
 export function useTranslate() {
