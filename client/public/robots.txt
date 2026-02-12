@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://asmayounas888-alt.github.io/punjabi-translator/sitemap.xml
+Sitemap: https://asmayounas888-alt.github.io/Punjabi-translator/sitemap.xml

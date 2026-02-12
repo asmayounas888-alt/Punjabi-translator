@@ -8,7 +8,7 @@ import Home from "@/pages/Home";
 
 function AppRouter() {
   return (
-    <Router base="/punjabi-translator">
+    <Router base="/Punjabi-translator">
       <Switch>
         <Route path="/" component={Home} />
         <Route component={NotFound} />
