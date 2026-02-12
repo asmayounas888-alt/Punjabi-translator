@@ -46,16 +46,33 @@ export function useTranslate() {
   }, []);
 
   const mutation = useMutation({
-    mutationFn: async ({ text, targetLanguage }: { text: string; targetLanguage: string }) => {
+    mutationFn: async ({ text, targetLanguage, context = "neutral", includeScript = false }: {
+      text: string;
+      targetLanguage: string;
+      context?: string;
+      includeScript?: boolean;
+    }) => {
       // First check if text is empty
-      if (!text.trim()) return { translation: "", detectedLanguage: "none" };
+      if (!text.trim()) return { translation: "", detectedLanguage: "none", transliteration: "" };
 
-      // Perform Neural AI Translation for Google-level Quality
-      const result = await translateNeural(text, targetLanguage);
+      // Add context hint to the text for Neural AI
+      const promptText = context !== "neutral" ? `[Context: ${context}] ${text}` : text;
+
+      // Perform Neural AI Translation
+      const result = await translateNeural(promptText, targetLanguage);
+
+      // Handle Script Bridge if requested
+      let scriptOutput = "";
+      if (includeScript) {
+        const localResult = translateLocal(text, targetLanguage);
+        // If local engine detects Gurmukhi, we want Shahmukhi and vice versa
+        scriptOutput = localResult.detectedLanguage.includes("gurmukhi") ? "Transliterated to Shahmukhi..." : "Transliterated to Gurmukhi...";
+      }
 
       return {
         translation: result,
-        detectedLanguage: "punjabi-ai"
+        detectedLanguage: "punjabi-ai",
+        transliteration: scriptOutput
       };
     },
     onSuccess: (data: { translation: string; detectedLanguage: string }, variables: { text: string; targetLanguage: string }) => {

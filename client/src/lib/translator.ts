@@ -25,6 +25,14 @@ const commonMapping: Record<string, { urdu: string, eng: string }> = {
     'ماں': { urdu: 'ماں', eng: 'mother' }, 'ਪਿਓ': { urdu: 'باپ', eng: 'father' }, 'پتر': { urdu: 'بیٹا', eng: 'son' },
     'ویرا': { urdu: 'بھائی', eng: 'brother' }, 'پین': { urdu: 'بہن', eng: 'sister' }, 'دھی': { urdu: 'بیٹی', eng: 'daughter' },
 
+    // Academic & Professional (v11.2 Expansion)
+    'ਅਕਾਦਮਿਕ': { urdu: 'تعلیمی', eng: 'academic' }, 'ਪੇਸ਼ੇਵਰ': { urdu: 'پیشہ ورانہ', eng: 'professional' },
+    'ਖੋਜ': { urdu: 'تحقیق', eng: 'research' }, 'ਸਿਖਲਾਈ': { urdu: 'تربیت', eng: 'training' },
+    'ਵਿਕਾਸ': { urdu: 'ترقی', eng: 'development' }, 'ਸੰਸਥਾ': { urdu: 'ادارہ', eng: 'institute' },
+    'ਤਕਨਾਲੋਜੀ': { urdu: 'ٹیکنالوجی', eng: 'technology' }, 'ਪ੍ਰਬੰਧ': { urdu: 'انتظام', eng: 'management' },
+    'تحقیق': { urdu: 'تحقیق', eng: 'research' }, 'ادارہ': { urdu: 'ادارہ', eng: 'institute' },
+    'ترقی': { urdu: 'ترقی', eng: 'development' }, 'تعلیم': { urdu: 'تعلیم', eng: 'education' },
+
     // Core Concepts
     'ਰੋਟੀ': { urdu: 'روٹی/کھانا', eng: 'food' }, 'ਪਾਣੀ': { urdu: 'پانی', eng: 'water' }, 'ਘਰ': { urdu: 'گھر', eng: 'home' },
     'ਸ਼ਹਿਰ': { urdu: 'شہر', eng: 'city' }, 'ਪਿੰਡ': { urdu: 'گاؤں', eng: 'village' }, 'ਕੰਮ': { urdu: 'کام', eng: 'work' },
@@ -50,7 +58,8 @@ const commonMapping: Record<string, { urdu: string, eng: string }> = {
 
 const scriptBridge: Record<string, string> = {
     'ਮੈਂ': 'میں', 'ਅਤੇ': 'اور', 'ਹੈ': 'ہے', 'ਸੀ': 'تھا', 'ਹਨ': 'ہیں', 'ਨੂੰ': 'نوں', 'ਦਾ': 'دا', 'ਦੀ': 'دی', 'ਦੇ': 'دے',
-    'ਰੋਟੀ': 'روٹی', 'ਪਾਣੀ': 'پانی', 'ਘਰ': 'گھر', 'ਕੰਮ': 'کم', 'ਦਿਨ': 'دن', 'ਰਾਤ': 'رات'
+    'ਰੋਟੀ': 'روٹی', 'ਪਾਣੀ': 'پانی', 'ਘਰ': 'گھر', 'ਕੰਮ': 'کم', 'ਦਿਨ': 'دن', 'ਰਾਤ': 'رات',
+    'ਖੋਜ': 'تحقیق', 'ਸੰਸਥਾ': 'ادارہ', 'ਵਿਕਾਸ': 'ترقی', 'ਪੇਸ਼ੇਵਰ': 'پیشہ ورانہ', 'ਤਕਨਾਲੋਜੀ': 'ٹیکنالوجی'
 };
 
 function normalize(text: string): string {

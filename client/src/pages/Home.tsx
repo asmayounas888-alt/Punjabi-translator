@@ -7,19 +7,49 @@ import { useToast } from "@/hooks/use-toast";
 import {
   Copy, Check, ArrowRight, Sparkles, Loader2, X,
   Terminal, Cpu, Globe2, BookOpen, Mail, Github, ExternalLink,
-  Code2, Languages, Database, Quote
+  Code2, Languages, Database, Quote, FileText, Book, History, Layers,
+  Linkedin
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import { cn } from "@/lib/utils";
 
 export default function Home() {
   const [text, setText] = useState("");
   const [targetLang, setTargetLang] = useState<"english" | "urdu">("english");
+  const [context, setContext] = useState("neutral");
+  const [includeScript, setIncludeScript] = useState(false);
   const [lastTranslation, setLastTranslation] = useState<string | null>(null);
+  const [transliteration, setTransliteration] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
 
   const { mutate: translate, isPending } = useTranslate();
   const { toast } = useToast();
+
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (file.type !== "text/plain") {
+      toast({
+        title: "Invalid file type",
+        description: "Please upload a .txt file.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const content = event.target?.result as string;
+      setText(content);
+      toast({
+        title: "File Loaded",
+        description: `Successfully loaded ${file.name}`,
+      });
+    };
+    reader.readAsText(file);
+  };
 
   const handleTranslate = () => {
     if (!text.trim()) {
@@ -32,10 +62,11 @@ export default function Home() {
     }
 
     translate(
-      { text, targetLanguage: targetLang },
+      { text, targetLanguage: targetLang, context, includeScript },
       {
-        onSuccess: (data: { translation: string; detectedLanguage: string }) => {
+        onSuccess: (data: { translation: string; detectedLanguage: string; transliteration?: string }) => {
           setLastTranslation(data.translation);
+          if (data.transliteration) setTransliteration(data.transliteration);
         },
         onError: (error: Error) => {
           toast({
@@ -109,15 +140,62 @@ export default function Home() {
 
           <div className="glass rounded-[2rem] overflow-hidden group">
             <div className="border-b border-white/5 p-6 bg-white/5 flex flex-wrap items-center justify-between gap-4">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center text-primary glow-primary">
-                  <Languages className="w-5 h-5" />
+              <div className="flex items-center gap-6">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center text-primary glow-primary">
+                    <Languages className="w-5 h-5" />
+                  </div>
+                  <div className="text-left">
+                    <p className="text-xs font-bold text-muted-foreground uppercase tracking-tighter">Powered by</p>
+                    <p className="text-sm font-bold">AI Neural Engine v11.0</p>
+                  </div>
                 </div>
-                <div className="text-left">
-                  <p className="text-xs font-bold text-muted-foreground uppercase tracking-tighter">Powered by</p>
-                  <p className="text-sm font-bold">AI Neural Engine v11.0</p>
+
+                {/* SCRIPT BRIDGE TOGGLE */}
+                <button
+                  onClick={() => setIncludeScript(!includeScript)}
+                  className={cn(
+                    "flex items-center gap-2 px-4 py-2 rounded-xl border transition-all text-[10px] font-black uppercase tracking-widest",
+                    includeScript
+                      ? "bg-primary/20 border-primary text-primary glow-primary"
+                      : "bg-white/5 border-white/10 text-muted-foreground hover:bg-white/10"
+                  )}
+                >
+                  <Layers className="w-3.5 h-3.5" />
+                  Script Bridge: {includeScript ? "ON" : "OFF"}
+                </button>
+
+                {/* CONTEXT SELECTOR */}
+                <div className="flex items-center gap-2 bg-black/20 p-1 rounded-xl border border-white/5">
+                  {[
+                    { id: "neutral", icon: <Globe2 className="w-3 h-3" />, label: "General" },
+                    { id: "poetic", icon: <Sparkles className="w-3 h-3" />, label: "Poetic" },
+                    { id: "academic", icon: <Book className="w-3 h-3" />, label: "Academic" }
+                  ].map((item) => (
+                    <button
+                      key={item.id}
+                      onClick={() => setContext(item.id)}
+                      className={cn(
+                        "flex items-center gap-2 px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all",
+                        context === item.id
+                          ? "bg-white text-black shadow-lg"
+                          : "text-muted-foreground hover:text-white"
+                      )}
+                    >
+                      {item.icon}
+                      {item.label}
+                    </button>
+                  ))}
                 </div>
+
+                {/* BATCH UPLOAD */}
+                <label className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-muted-foreground hover:bg-white/10 cursor-pointer transition-all text-[10px] font-black uppercase tracking-widest">
+                  <FileText className="w-3.5 h-3.5" />
+                  Batch Upload
+                  <input type="file" accept=".txt" onChange={handleFileUpload} className="hidden" />
+                </label>
               </div>
+
               <LanguageSelector
                 targetLang={targetLang}
                 setTargetLang={setTargetLang}
@@ -195,9 +273,24 @@ export default function Home() {
                       <p className="text-xs font-black uppercase tracking-widest text-primary">Computing Inference...</p>
                     </div>
                   ) : lastTranslation ? (
-                    <p className="text-2xl md:text-3xl leading-relaxed font-bold text-white nlp-text-reveal">
-                      {lastTranslation}
-                    </p>
+                    <div className="space-y-8">
+                      <div className="animate-fade-in">
+                        <p className="text-2xl md:text-3xl leading-relaxed font-bold text-white nlp-text-reveal">
+                          {lastTranslation}
+                        </p>
+                      </div>
+
+                      {includeScript && transliteration && (
+                        <div className="pt-8 border-t border-white/5 animate-fade-in-up">
+                          <span className="text-[10px] font-black text-primary/40 uppercase tracking-[0.2em] mb-3 block">
+                            Script Bridge (Cross-Script Transliteration)
+                          </span>
+                          <p className="text-xl md:text-2xl leading-relaxed font-bold text-primary/80 italic">
+                            {transliteration}
+                          </p>
+                        </div>
+                      )}
+                    </div>
                   ) : (
                     <div className="h-full flex flex-col items-center justify-center text-center">
                       <div className="w-20 h-20 rounded-3xl bg-white/5 flex items-center justify-center mb-6 rotate-12 group-hover:rotate-0 transition-transform duration-500">
