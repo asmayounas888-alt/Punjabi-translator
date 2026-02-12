@@ -89,8 +89,8 @@ export default function Home() {
             <Button size="lg" className="rounded-full px-8 bg-primary hover:bg-primary/90 text-primary-foreground font-bold shadow-xl shadow-primary/20 transition-all hover:scale-105 active:scale-95">
               Explore My Research
             </Button>
-            <Button size="lg" variant="outline" className="rounded-full px-8 border-white/10 glass-dark hover:bg-white/5 font-bold transition-all hover:scale-105 active:scale-95">
-              Contact Me
+            <Button size="lg" variant="outline" className="rounded-full px-8 border-white/10 glass-dark hover:bg-white/5 font-bold transition-all hover:scale-105 active:scale-95" asChild>
+              <a href="mailto:asmayounas888@gmail.com">Contact Me</a>
             </Button>
           </div>
         </section>
@@ -282,9 +282,25 @@ export default function Home() {
         {/* FOOTER / CONTACT */}
         <footer className="mt-40 pt-20 border-t border-white/5 text-center">
           <div className="flex justify-center gap-8 mb-10">
-            <a href="#" className="text-muted-foreground hover:text-primary transition-colors"><Mail className="w-6 h-6" /></a>
-            <a href="https://github.com/asmayounas888-alt" className="text-muted-foreground hover:text-primary transition-colors"><Github className="w-6 h-6" /></a>
-            <a href="#" className="text-muted-foreground hover:text-primary transition-colors"><ExternalLink className="w-6 h-6" /></a>
+            <a href="mailto:asmayounas888@gmail.com" className="text-muted-foreground hover:text-primary transition-colors">
+              <Mail className="w-6 h-6" />
+            </a>
+            <a
+              href="https://github.com/asmayounas888-alt"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-muted-foreground hover:text-primary transition-colors"
+            >
+              <Github className="w-6 h-6" />
+            </a>
+            <a
+              href="https://www.linkedin.com/in/aasma-younas-242891318"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-muted-foreground hover:text-primary transition-colors"
+            >
+              <Linkedin className="w-6 h-6" />
+            </a>
           </div>
           <p className="text-sm font-bold opacity-30 tracking-tighter uppercase">
             © 2026 Aasma Younas · Designed for Computational Excellence

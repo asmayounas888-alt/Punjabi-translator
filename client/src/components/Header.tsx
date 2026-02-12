@@ -38,14 +38,29 @@ export function Header() {
 
         <div className="flex items-center gap-3">
           <div className="hidden sm:flex items-center gap-2 pr-4 border-r border-white/10 mr-4">
-            {[Linkedin, Twitter, Github].map((Icon, i) => (
-              <a key={i} href="#" className="p-2 text-muted-foreground hover:text-primary transition-colors">
-                <Icon className="w-4 h-4" />
-              </a>
-            ))}
+            <a
+              href="https://www.linkedin.com/in/aasma-younas-242891318"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="p-2 text-muted-foreground hover:text-primary transition-colors"
+            >
+              <Linkedin className="w-4 h-4" />
+            </a>
+            <a
+              href="https://github.com/asmayounas888-alt"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="p-2 text-muted-foreground hover:text-primary transition-colors"
+            >
+              <Github className="w-4 h-4" />
+            </a>
           </div>
-          <Button size="sm" className="rounded-xl px-6 bg-white text-black font-black hover:bg-white/90">
-            HIRE ME
+          <Button
+            size="sm"
+            className="rounded-xl px-6 bg-white text-black font-black hover:bg-white/90"
+            asChild
+          >
+            <a href="mailto:asmayounas888@gmail.com">HIRE ME</a>
           </Button>
           <Button variant="ghost" size="icon" className="md:hidden rounded-xl bg-white/5">
             <Menu className="w-5 h-5" />
