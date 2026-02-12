@@ -35,7 +35,7 @@ async function translateNeural(text: string, targetLanguage: string): Promise<st
   }
 }
 
-export function useTranslations() {
+export function useTranslate() {
   const queryClient = useQueryClient();
   const [history, setHistory] = useState<Translation[]>([]);
 
@@ -59,7 +59,7 @@ export function useTranslations() {
         detectedLanguage: "punjabi-ai"
       };
     },
-    onSuccess: (data, variables) => {
+    onSuccess: (data: { translation: string; detectedLanguage: string }, variables: { text: string; targetLanguage: string }) => {
       if (!variables.text.trim()) return;
 
       const newTranslation: Translation = {
@@ -82,7 +82,7 @@ export function useTranslations() {
   };
 
   return {
-    translate: mutation.mutate,
+    mutate: mutation.mutate,
     isPending: mutation.isPending,
     lastResult: mutation.data,
     history,

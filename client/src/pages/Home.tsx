@@ -34,13 +34,13 @@ export default function Home() {
     translate(
       { text, targetLanguage: targetLang },
       {
-        onSuccess: (data) => {
+        onSuccess: (data: { translation: string; detectedLanguage: string }) => {
           setLastTranslation(data.translation);
         },
-        onError: (error) => {
+        onError: (error: Error) => {
           toast({
-            title: "Processing Error",
-            description: error.message,
+            title: "Translation failed",
+            description: error.message || "An unexpected error occurred. Please try again.",
             variant: "destructive",
           });
         },
