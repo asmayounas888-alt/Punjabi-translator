@@ -87,6 +87,7 @@ const commonWords: Record<string, { english: string; urdu: string }> = {
     'مسنجا': { english: 'lonely', urdu: 'اکیلا' },
     'اکھر': { english: 'words', urdu: 'الفاظ' },
     'جی': { english: 'yes/sir', urdu: 'جی' },
+    'بُلھا': { english: 'Bulleh', urdu: 'بُلھا' },
 };
 
 function detectPunjabiScript(text: string): boolean {
