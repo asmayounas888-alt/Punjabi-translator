@@ -78,17 +78,32 @@ export function useTranslate() {
     onSuccess: (data: { translation: string; detectedLanguage: string }, variables: { text: string; targetLanguage: string }) => {
       if (!variables.text.trim()) return;
 
+      // Truncate text for history to save space if it's too long (Batch translations)
+      const truncate = (str: string) => str.length > 5000 ? str.substring(0, 5000) + "... [Truncated]" : str;
+
       const newTranslation: Translation = {
         id: Math.random().toString(36).substring(7),
-        text: variables.text,
-        translation: data.translation,
+        text: truncate(variables.text),
+        translation: truncate(data.translation),
         targetLanguage: variables.targetLanguage,
         timestamp: Date.now(),
       };
 
-      const updatedHistory = [newTranslation, ...history].slice(0, 10);
-      setHistory(updatedHistory);
-      localStorage.setItem("punjabi_translations", JSON.stringify(updatedHistory));
+      try {
+        const updatedHistory = [newTranslation, ...history].slice(0, 10);
+        setHistory(updatedHistory);
+        localStorage.setItem("punjabi_translations", JSON.stringify(updatedHistory));
+      } catch (e) {
+        console.warn("Storage full, emergency trimming history", e);
+        // Emergency: Just store the single newest one or clear if totally failed
+        const emergencyHistory = [newTranslation];
+        setHistory(emergencyHistory);
+        try {
+          localStorage.setItem("punjabi_translations", JSON.stringify(emergencyHistory));
+        } catch (innerErr) {
+          localStorage.removeItem("punjabi_translations");
+        }
+      }
     },
   });
 
