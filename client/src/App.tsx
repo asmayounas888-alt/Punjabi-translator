@@ -7,10 +7,13 @@ import NotFound from "@/pages/not-found";
 import Home from "@/pages/Home";
 
 function AppRouter() {
+  // Use the base URL from Vite config, removing trailing slash for wouter compatibility
+  const base = (import.meta as any).env.BASE_URL.replace(/\/$/, "");
+
   return (
-    <Router base="/punjabi-translator">
+    <Router base={base}>
       <Switch>
-        <Route path="/" component={Home} />
+        <Route path="/:rest*" component={Home} />
         <Route component={NotFound} />
       </Switch>
     </Router>
