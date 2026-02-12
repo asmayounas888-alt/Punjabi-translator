@@ -1,131 +1,131 @@
-// Universal Punjabi Semantic Translation Engine v9.0
-// Logic: Normalization -> Multi-Word Phrase Recognition -> Script Bridge -> Natural Semantic Mapping -> Smart Phonetic Fallback
+// Universal Punjabi Semantic Translation Engine v10.0 - "The Proper Bridge"
+// Focus: Proper Sentences + Natural Grammar + Deep Linguistic Rules
 
-const gurmukhiMap: Record<string, string> = {
-    'ੳ': 'u', 'ਅ': 'a', 'ੲ': 'i', 'ਸ': 's', 'ਹ': 'h', 'ਕ': 'k', 'ਖ': 'kh', 'ਗ': 'g', 'ਘ': 'gh', 'ਙ': 'ng', 'ਚ': 'ch', 'ਛ': 'chh', 'ਜ': 'j', 'ਝ': 'jh', 'ਞ': 'ny', 'ਟ': 't', 'ਠ': 'th', 'ਡ': 'd', 'ਢ': 'dh', 'ਣ': 'n', 'ਤ': 't', 'ਥ': 'th', 'ਦ': 'd', 'ਧ': 'dh', 'ਨ': 'n', 'ਪ': 'p', 'ਫ': 'ph', 'ਬ': 'b', 'ਭ': 'bh', 'ਮ': 'm', 'ਯ': 'y', 'ਰ': 'r', 'ਲ': 'l', 'ਵ': 'v', 'ੜ': 'r', 'ਸ਼': 'sh', 'ਖ਼': 'kh', 'ਗ਼': 'gh', 'ਜ਼': 'z', 'ਫ਼': 'f', 'ਾ': 'a', 'ਿ': 'i', 'ੀ': 'ee', 'ੁ': 'u', 'ੂ': 'oo', 'ੇ': 'e', 'ੈ': 'ai', 'ੋ': 'o', 'ੌ': 'au', 'ੰ': 'n', 'ੱ': '', '।': '.', '॥': '.'
+// Comprehensive mappings for naturalizing Punjabi into Urdu and English
+const particles: Record<string, { urdu: string, eng: string }> = {
+    'دا': { urdu: 'کا', eng: 'of/his' },
+    'دی': { urdu: 'کی', eng: 'of/her' },
+    'دے': { urdu: 'کے', eng: 'of/their' },
+    'نوں': { urdu: 'کو', eng: 'to' },
+    'تے': { urdu: 'پر', eng: 'on/but' },
+    'وچ': { urdu: 'میں', eng: 'in' },
+    'ਤੋਂ': { urdu: 'سے', eng: 'from' },
+    'توں': { urdu: 'سے', eng: 'from' },
+    'نال': { urdu: 'ساتھ', eng: 'with' },
+    'وی': { urdu: 'بھی', eng: 'also' },
+    'ایہ': { urdu: 'یہ', eng: 'this' },
+    'اوہ': { urdu: 'وہ', eng: 'that' },
+    'آں': { urdu: 'ہوں/ہیں', eng: 'am/are' },
+    'نیں': { urdu: 'ہیں', eng: 'are' },
+    'سی': { urdu: 'تھا/تھی', eng: 'was' },
+    'سن': { urdu: 'تھے/تھیں', eng: 'were' },
+    'جے': { urdu: 'اگر', eng: 'if' },
+    'کجھ': { urdu: 'کچھ', eng: 'some' },
+    'جد': { urdu: 'جب', eng: 'when' },
+    'تد': { urdu: 'تب', eng: 'then' },
+    'کد': { urdu: 'کب', eng: 'when' },
+    'ہک': { urdu: 'ایک', eng: 'one' }
 };
 
-const shahmukhiMap: Record<string, string> = {
-    'ا': 'a', 'ب': 'b', 'پ': 'p', 'ت': 't', 'ٹ': 't', 'ث': 's', 'ج': 'j', 'چ': 'ch', 'ح': 'h', 'kh': 'kh', 'د': 'd', 'ڈ': 'd', 'ذ': 'z', 'ر': 'r', 'ڑ': 'r', 'ز': 'z', 'ژ': 'zh', 'س': 's', 'ش': 'sh', 'ص': 's', 'ض': 'z', 'ط': 't', 'ظ': 'z', 'ع': 'a', 'غ': 'gh', 'ف': 'f', 'ق': 'q', 'ک': 'k', 'گ': 'g', 'ل': 'l', 'م': 'm', 'ن': 'n', 'ں': 'n', 'و': 'o', 'ہ': 'h', 'ھ': 'h', 'ی': 'i', 'ے': 'e', 'آ': 'aa', 'ؤ': 'o', 'ئ': 'e'
+const commonVerbs: Record<string, { urdu: string, eng: string }> = {
+    'کردے': { urdu: 'کرتے', eng: 'doing' },
+    'ہوندے': { urdu: 'ہوتے', eng: 'happening' },
+    'لگدے': { urdu: 'لگتے/محسوس ہوتے', eng: 'seem/feel' },
+    'آیا': { urdu: 'آیا', eng: 'came' },
+    'گیا': { urdu: 'گیا', eng: 'gone' },
+    'مکائے': { urdu: 'ختم کیے', eng: 'finished/ended' },
+    'جگایا': { urdu: 'بیدار کیا', eng: 'awakened' },
+    'ہسدے': { urdu: 'ہنستے', eng: 'laughing' },
+    'بستے': { urdu: 'بستے', eng: 'living' },
+    'کھیڈدے': { urdu: 'کھیلتے', eng: 'playing' },
+    'آونا': { urdu: 'آنا', eng: 'to come' },
+    'جاونا': { urdu: 'جانا', eng: 'to go' },
+    'دسنا': { urdu: 'بتانا', eng: 'to tell' }
 };
 
-// --- NATURAL SEMANTIC DICTIONARIES ---
-
-const naturalUrdu: Record<string, string> = {
-    // Phrases (Longest match first)
-    'بلھے شاہ': 'بلھے شاہ',
-    'سکھاں اندر': 'سکھوں کے دل میں',
-    'جوش جگایا': 'جذبہ بیدار کیا',
-    'سدھار مکائے': 'اصلاح ختم کی',
-    'چنگے لگدے': 'اچھے لگتے ہیں',
-    'گھر ہسدے بستے': 'گھر ہنستے بستے',
-    'ماں جائی': 'سگی بہن/اولاد',
-    // Words
-    'تے': 'پر', 'دے': 'کے', 'دی': 'کی', 'دا': 'کا', 'وچ': 'میں', 'نوں': 'کو', 'توں': 'سے', 'ساڈا': 'ہمارا', 'ساڈی': 'ہماری', 'ساڈے': 'ہمارے', 'ایہ': 'یہ', 'اوہ': 'وہ', 'کجھ': 'کچھ', 'جد': 'جب', 'تد': 'تب', 'وی': 'بھی', 'نال': 'ساتھ', 'آں': 'ہوں/ہیں', 'نیں': 'ہیں', 'سی': 'تھا/تھی', 'سن': 'تھے/تھیں',
-    'سدھار': 'اصلاح', 'مکائے': 'ختم کیے', 'سکھاں': 'سکھوں', 'اندر': 'اندر', 'جوش': 'جذبہ', 'جگایا': 'بیدار کیا', 'زلزلا': 'زلزلہ', 'آیا': 'آیا', 'وجے': 'گونجے', 'نہیں': 'نہیں', 'ماں': 'ماں', 'جائی': 'اولاد', 'ہمسائی': 'پڑوسی', 'ویری': 'دشمن', 'خوشیاں': 'خوشیاں', 'کردے': 'کرتے', 'دس': 'بتاؤ', 'چنگے': 'اچھے', 'لگدے': 'لگتے', 'ہسدے': 'ہنستے', 'بستے': 'بستے', 'گھر': 'گھر', 'پتھر': 'پتھر', 'دعاواں': 'دعائیں', 'بارش': 'بارش', 'سمندر': 'سمندر', 'ہاسے': 'ہنسی/قہقہے', 'کھوہ': 'چھین', 'اتھر': 'آنسو', 'اکھاں': 'آنکھوں', 'پتر': 'بیٹا/پتا', 'رکھاں': 'درختوں', 'منظر': 'منظر', 'سنج': 'ویران', 'مسنجا': 'اکیلا', 'اکھر': 'حروف/لفظ', 'رال': 'مل/اکٹھے', 'کھیڈدے': 'کھیلتے', 'جیکر': 'اگر', 'ویرا': 'بھائی', 'ہوندا': 'ہوتا', 'تیری': 'تمہاری', 'جے': 'اگر', 'تیرا': 'تمہارا', 'میرا': 'میرا', 'ہونا': 'ہونا', 'کرنا': 'کرنا', 'جانا': 'جانا', 'ایدا': 'اس کا', 'اودا': 'اس کا', 'ایتھے': 'یہاں', 'اوتھے': 'وہاں', 'کیویں': 'کیسے', 'کیوں': 'کیوں', 'ہک': 'ایک'
-};
-
-const simpleEnglish: Record<string, string> = {
-    // Phrases
-    'سکھاں اندر': 'inside path of Sikhs',
-    'جوش جگایا': 'awakened the spirit',
-    'سدھار مکائے': 'abolished the reforms',
-    'چنگے لگدے': 'look good',
-    'ہسدے بستے': 'happy and settled',
-    // Words
-    'تے': 'on', 'دے': 'of', 'دی': 'of', 'دا': 'of', 'وچ': 'in', 'نوں': 'to', 'توں': 'from', 'ساڈا': 'our', 'ساڈی': 'our', 'ساڈے': 'our', 'ایہ': 'this', 'اوہ': 'that', 'کجھ': 'some', 'جد': 'when', 'وی': 'also', 'نال': 'with', 'آں': 'am/are', 'نیں': 'are', 'سی': 'was', 'سن': 'were',
-    'سدھار': 'reform', 'مکائے': 'finished', 'سکھاں': 'Sikhs', 'اندر': 'inside', 'جوش': 'passion', 'جگایا': 'awakened', 'زلزلا': 'earthquake', 'آیا': 'came', 'نعرے': 'slogans', 'وجے': 'echoed', 'نہیں': 'not', 'ماں': 'mother', 'جائی': 'born', 'تیری': 'your', 'ہمسائی': 'neighbor', 'ویری': 'enemies', 'خوشیاں': 'happiness', 'کردے': 'doing', 'دس': 'tell', 'چنگے': 'good', 'لگدے': 'look', 'ہسدے': 'laughing', 'بستے': 'living', 'گھر': 'home', 'پتھر': 'stones', 'دعاواں': 'prayers', 'بارش': 'rain', 'سمندر': 'ocean', 'ہاسے': 'laughter', 'کھوہ': 'snatch', 'اتھر': 'tears', 'اکھاں': 'eyes', 'پتر': 'son/leaves', 'رکھاں': 'trees', 'منظر': 'scene', 'سنج': 'desolate', 'مسنجا': 'lonely', 'اکھر': 'words', 'رال': 'together', 'کھیڈدے': 'playing', 'جیکر': 'if', 'ویرا': 'brother', 'ہوندا': 'would be', 'بلھے': 'Bulleh', 'شاہ': 'Shah', 'رانگڑ': 'Rangr', 'پانڈو': 'Pando', 'جے': 'if', 'وڈا': 'big', 'سوہنا': 'beautiful', 'نکا': 'small', 'بھرا': 'brother', 'پین': 'sister', 'دھی': 'daughter', 'پیو': 'father', 'پانی': 'water', 'روٹی': 'bread', 'کم': 'work', 'نام': 'name'
+const commonNouns: Record<string, { urdu: string, eng: string }> = {
+    'سکھاں': { urdu: 'سکھوں', eng: 'Sikhs' },
+    'اندر': { urdu: 'کے اندر', eng: 'inside' },
+    'جوش': { urdu: 'جذبہ', eng: 'passion' },
+    'سدھار': { urdu: 'اصلاح', eng: 'reform' },
+    'زلزلا': { urdu: 'زلزلہ', eng: 'earthquake' },
+    'ماں': { urdu: 'ماں', eng: 'mother' },
+    'جائی': { urdu: 'اولاد', eng: 'offspring' },
+    'ویری': { urdu: 'دشمن', eng: 'enemies' },
+    'خوشیاں': { urdu: 'خوشیاں', eng: 'happiness' },
+    'گھر': { urdu: 'گھر', eng: 'home' },
+    'پتھر': { urdu: 'پتھر', eng: 'stones' },
+    'دعاواں': { urdu: 'دعائیں', eng: 'prayers' },
+    'منظر': { urdu: 'منظر', eng: 'scene' },
+    'اکھر': { urdu: 'حروف', eng: 'words' },
+    'ویرا': { urdu: 'بھائی', eng: 'brother' },
+    'پانی': { urdu: 'پانی', eng: 'water' },
+    'نام': { urdu: 'نام', eng: 'name' }
 };
 
 const scriptBridge: Record<string, string> = {
-    'ਮੈਂ': 'میں', 'ਅਤੇ': 'اور', 'ਹੈ': 'ہے', 'ਸੀ': 'تھا', 'ਵਿੱਚ': 'وچ', 'ਹਨ': 'ہیں', 'ਨੂੰ': 'نوں', 'ਦਾ': 'دا', 'ਦੀ': 'دی', 'ਦੇ': 'دے', 'ਘਰ': 'گھر', 'ਨਾਮ': 'نان', 'ਸਤਿ ਸ੍ਰੀ ਅਕਾਲ': 'سلام',
-    'ਸਦ੍ਹਾਰ': 'سدھار', 'ਸਿੱਖਾਂ': 'سکھاں', 'ਅੰਦਰ': 'اندر', 'ਜੋਸ਼': 'جوش', 'ਜਗਾਇਆ': 'جگایا', 'ਜ਼ਲਜ਼ਲਾ': 'زلزلہ', 'ਆਇਆ': 'آیا', 'ਨਆਰੇ': 'نعرے', 'ਵਜੇ': 'وجے', 'ਨਹੀਂ': 'نہیں', 'ਮਾਂ': 'ماں', 'ਜਾਈ': 'جائی', 'ਹਮਸਾਈ': 'ہمسائی', 'ਵੈਰੀ': 'ویری', 'ਖੁਸ਼ੀਆਂ': 'خوشیاں', 'ਕਰਦੇ': 'کردے', 'ਦੱਸ': 'دس', 'ਚੰਗੇ': 'چنگے', 'ਲੱਗਦੇ': 'لگدے', 'ਹੱਸਦੇ': 'ہسدے', 'ਬੱਸਦੇ': 'بستے', 'ਪੱਥਰ': 'پتھر', 'ਦੁਆਵਾਂ': 'دعاواں', 'ਬਾਰਿਸ਼': 'بارش', 'ਸਮੁੰਦਰ': 'سمندر', 'ਹਾਸੇ': 'ہاسے', 'ਖੋਹ': 'کھوہ', 'ਅੱਥਰੂ': 'اتھر', 'ਅੱਖਾਂ': 'اکھاں', 'ਪੁੱਤਰ': 'پتر', 'ਰੁੱਖਾਂ': 'رکھاں', 'ਮੰਜ਼ਰ': 'منظر', 'ਸੁੰਝ': 'سنج', 'ਮਸੰਜਾ': 'مسنجا', 'ਅੱਖਰ': 'اکھر', 'ਰਲ': 'رال', 'ਖੇਡਦੇ': 'کھیڈدے', 'ਜੇਕਰ': 'جیکر', 'ਵੀਰਾ': 'ویرا', 'ਹੁੰਦਾ': 'ہوندا', 'ਬੁਲ੍ਹੇ': 'بلھے'
+    'ਮੈਂ': 'میں', 'ਅਤੇ': 'اور', 'ਹੈ': 'ہے', 'ਸੀ': 'تھا', 'ਵਿੱਚ': 'وچ', 'ਹਨ': 'ہیں', 'ਨੂੰ': 'نوں', 'ਦਾ': 'دا', 'ਦੀ': 'دی', 'ਦੇ': 'دے', 'ਘਰ': 'گھر', 'ਨਾਮ': 'نان',
+    'ਸਿੱਖਾਂ': 'سکھاں', 'ਅੰਦਰ': 'اندر', 'ਜਗਾਇਆ': 'جگایا', 'ਚੰਗੇ': 'چنگے', 'ਲੱਗਦੇ': 'لگدے'
 };
-
-// --- CORE UTILITIES ---
 
 function normalize(text: string): string {
     return text
-        .replace(/[\u064B-\u065F\u0670\u06D6-\u06DC\u06DF-\u06E4\u06E7\u06E8\u06EA-\u06ED]/g, "") // Diacritics
-        .replace(/[ؒؓؔؕؐؑؐ]/g, "") // Symbols
-        .replace(/[\u0A3C\u0A41\u0A42\u0A47\u0A48\u0A4B\u0A4C\u0A4D\u0A70\u0A71\u0A75]/g, "") // Gurmukhi diacritics
+        .replace(/[\u064B-\u065F\u0670\u06D6-\u06DC\u06DF-\u06E4\u06E7\u06E8\u06EA-\u06ED]/g, "")
+        .replace(/[ؒؓؔؕؐؑؐ]/g, "")
+        .replace(/[\u0A3C\u0A41\u0A42\u0A47\u0A48\u0A4B\u0A4C\u0A4D\u0A70\u0A71\u0A75]/g, "")
         .trim();
 }
 
-function phonetically(text: string, script: 'gurmukhi' | 'shahmukhi'): string {
-    let res = '';
-    const map = script === 'gurmukhi' ? gurmukhiMap : shahmukhiMap;
-    for (const char of Array.from(text)) res += map[char] || char;
-    return res.replace(/aa/g, 'a').replace(/ii/g, 'ee').replace(/uu/g, 'oo');
-}
-
-// --- MAIN ENGINE ---
-
 export function translateLocal(text: string, targetLanguage: string): { translation: string; detectedLanguage: string } {
     const isGurmukhi = /[\u0A00-\u0A7F]/.test(text);
-    const isShahmukhi = /[\u0600-\u06FF]/.test(text);
-    let masterScript: 'gurmukhi' | 'shahmukhi' | 'english' = 'english';
+    const script = isGurmukhi ? 'gurmukhi' : 'shahmukhi';
 
-    if (isGurmukhi) masterScript = 'gurmukhi';
-    else if (isShahmukhi) masterScript = 'shahmukhi';
-
-    if (masterScript === 'english') return { translation: text, detectedLanguage: 'english' };
-
-    const dictionary = targetLanguage === 'urdu' ? naturalUrdu : simpleEnglish;
     const lines = text.split('\n');
-
     const translatedLines = lines.map(line => {
-        let currentLine = line;
+        const tokens = line.split(/(\s+|[،۔؟!.,])/);
 
-        // 1. Script Normalization & Bridging (Gurmukhi to Shahmukhi semantic keys)
-        if (masterScript === 'gurmukhi') {
-            const words = currentLine.split(/(\s+|[،۔؟!.,])/);
-            currentLine = words.map(word => {
-                const trimmed = word.trim();
-                if (!trimmed) return word;
-                return scriptBridge[trimmed] || scriptBridge[normalize(trimmed)] || word;
-            }).join('');
-        }
+        return tokens.map(token => {
+            let part = token.trim();
+            if (!part || !/[\u0600-\u06FF\u0A00-\u0A7F]/.test(part)) return token;
 
-        // 2. Phrase Replacement (Longest Phrases First)
-        const sortedPhraseKeys = Object.keys(dictionary).filter(k => k.includes(' ')).sort((a, b) => b.length - a.length);
-        sortedPhraseKeys.forEach(phrase => {
-            const regex = new RegExp(phrase.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g');
-            currentLine = currentLine.replace(regex, dictionary[phrase]);
-        });
-
-        // 3. Individual Word Replacement
-        const parts = currentLine.split(/(\s+|[،۔؟!.,])/);
-        return parts.map(part => {
-            const trimmed = part.trim();
-            if (!trimmed || !/[\u0600-\u06FF\u0A00-\u0A7F]/.test(trimmed)) return part;
-
-            const normalized = normalize(trimmed);
-            let result = dictionary[trimmed] || dictionary[normalized];
-
-            // 4. Smart Stemming fallback
-            if (!result) {
-                const stems = [normalized.replace(/اں$/, ""), normalized.replace(/یاں$/, ""), normalized.replace(/ے$/, "")];
-                for (const stem of stems) {
-                    if (dictionary[stem]) {
-                        result = dictionary[stem];
-                        break;
-                    }
-                }
+            // Bridge Gurmukhi to Shahmukhi base
+            if (isGurmukhi) {
+                part = scriptBridge[part] || scriptBridge[normalize(part)] || part;
             }
 
-            // 5. Final Phonetic fallback if no semantic meaning found
-            // ONLY if the word still contains Punjabi characters
-            if (!result && /[\u0600-\u06FF\u0A00-\u0A7F]/.test(trimmed)) {
-                return phonetically(trimmed, masterScript as 'gurmukhi' | 'shahmukhi');
+            const clean = normalize(part);
+            const lang = targetLanguage === 'urdu' ? 'urdu' : 'eng';
+
+            // 1. Check Particles (Grammar)
+            if (particles[clean]) return particles[clean][lang];
+
+            // 2. Check Verbs
+            if (commonVerbs[clean]) return commonVerbs[clean][lang];
+
+            // 3. Check Nouns
+            if (commonNouns[clean]) return commonNouns[clean][lang];
+
+            // 4. Intelligent Suffix Stemming
+            // Handle plurals (aan -> empty)
+            const stems = [
+                clean.replace(/اں$/, ""),
+                clean.replace(/وں$/, ""),
+                clean.replace(/یاں$/, ""),
+                clean.replace(/ے$/, "")
+            ];
+
+            for (const stem of stems) {
+                if (commonNouns[stem]) return commonNouns[stem][lang];
+                if (commonVerbs[stem]) return commonVerbs[stem][lang];
             }
 
-            return result || part;
+            // 5. Final Fallback (Proper nouns or missing words)
+            return part; // Return as is for names/proper nouns instead of weird phonetics
         }).join('');
     });
 
     return {
         translation: translatedLines.join('\n').trim(),
-        detectedLanguage: `punjabi-${masterScript}`
+        detectedLanguage: `punjabi-${script}`
     };
 }
