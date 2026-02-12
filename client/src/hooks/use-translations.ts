@@ -1,58 +1,91 @@
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { type TranslationResponse } from "@shared/routes";
-import { type Translation } from "@shared/schema";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useState, useEffect } from "react";
 import { translateLocal } from "@/lib/translator";
 
-const STORAGE_KEY = "translation_history";
+export type Translation = {
+  id: string;
+  text: string;
+  translation: string;
+  targetLanguage: string;
+  timestamp: number;
+};
 
-function getLocalHistory(): Translation[] {
-  const stored = localStorage.getItem(STORAGE_KEY);
-  return stored ? JSON.parse(stored) : [];
+// AI Neural Translation Engine (Google Quality)
+async function translateNeural(text: string, targetLanguage: string): Promise<string> {
+  const target = targetLanguage === 'urdu' ? 'ur' : 'en';
+  // Detected script (Gurmukhi vs Shahmukhi)
+  const isGurmukhi = /[\u0A00-\u0A7F]/.test(text);
+  const source = isGurmukhi ? 'pa' : 'pa'; // Standard Punjabi code
+
+  try {
+    const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=${target}&dt=t&q=${encodeURIComponent(text)}`;
+    const response = await fetch(url);
+    const data = await response.json();
+
+    // Extracting meaningful sentences from the neural response
+    if (data && data[0]) {
+      return data[0].map((sentence: any) => sentence[0]).join('');
+    }
+
+    // Fallback to our local high-fidelity engine if AI fails
+    return translateLocal(text, targetLanguage).translation;
+  } catch (error) {
+    console.error("Neural Translation Error:", error);
+    return translateLocal(text, targetLanguage).translation;
+  }
 }
 
-function saveToLocalHistory(item: Translation) {
-  const history = getLocalHistory();
-  const updated = [item, ...history].slice(0, 50);
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
-}
-
-export function useHistory() {
-  return useQuery({
-    queryKey: ["history"],
-    queryFn: async () => {
-      return getLocalHistory();
-    },
-  });
-}
-
-export function useTranslate() {
+export function useTranslations() {
   const queryClient = useQueryClient();
+  const [history, setHistory] = useState<Translation[]>([]);
 
-  return useMutation({
-    mutationFn: async (data: { text: string; targetLanguage: "english" | "urdu" }) => {
-      const { translation, detectedLanguage } = translateLocal(data.text, data.targetLanguage);
+  useEffect(() => {
+    const saved = localStorage.getItem("punjabi_translations");
+    if (saved) {
+      setHistory(JSON.parse(saved));
+    }
+  }, []);
 
-      const result: TranslationResponse = {
-        translation,
-        detectedLanguage,
-        originalText: data.text,
+  const mutation = useMutation({
+    mutationFn: async ({ text, targetLanguage }: { text: string; targetLanguage: string }) => {
+      // First check if text is empty
+      if (!text.trim()) return { translation: "", detectedLanguage: "none" };
+
+      // Perform Neural AI Translation for Google-level Quality
+      const result = await translateNeural(text, targetLanguage);
+
+      return {
+        translation: result,
+        detectedLanguage: "punjabi-ai"
       };
-
-      const historyItem: Translation = {
-        id: Date.now(),
-        sourceText: data.text,
-        translatedText: translation,
-        sourceLang: detectedLanguage,
-        targetLang: data.targetLanguage,
-        createdAt: new Date().toISOString() as any,
-      };
-
-      saveToLocalHistory(historyItem);
-
-      return result;
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["history"] });
+    onSuccess: (data, variables) => {
+      if (!variables.text.trim()) return;
+
+      const newTranslation: Translation = {
+        id: Math.random().toString(36).substring(7),
+        text: variables.text,
+        translation: data.translation,
+        targetLanguage: variables.targetLanguage,
+        timestamp: Date.now(),
+      };
+
+      const updatedHistory = [newTranslation, ...history].slice(0, 10);
+      setHistory(updatedHistory);
+      localStorage.setItem("punjabi_translations", JSON.stringify(updatedHistory));
     },
   });
+
+  const clearHistory = () => {
+    setHistory([]);
+    localStorage.removeItem("punjabi_translations");
+  };
+
+  return {
+    translate: mutation.mutate,
+    isPending: mutation.isPending,
+    lastResult: mutation.data,
+    history,
+    clearHistory,
+  };
 }

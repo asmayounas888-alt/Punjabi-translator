@@ -100,10 +100,10 @@ export default function Home() {
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold mb-4 flex items-center justify-center gap-3">
               Punjabi Semantic Engine
-              <span className="text-[10px] bg-primary/20 text-primary px-2 py-0.5 rounded-full border border-primary/30 uppercase tracking-tighter">v10.0 Live</span>
+              <span className="text-[10px] bg-primary/20 text-primary px-2 py-0.5 rounded-full border border-primary/30 uppercase tracking-tighter">v11.0 Neural AI Live</span>
             </h2>
             <p className="text-muted-foreground max-w-xl mx-auto">
-              Deployment of Proper Simple English & Natural Urdu extraction for Shahmukhi and Gurmukhi scripts.
+              Proper Simple English & Natural Urdu extraction using Neural AI Models.
             </p>
           </div>
 
@@ -115,7 +115,7 @@ export default function Home() {
                 </div>
                 <div className="text-left">
                   <p className="text-xs font-bold text-muted-foreground uppercase tracking-tighter">Powered by</p>
-                  <p className="text-sm font-bold">NLP Engine v10.0</p>
+                  <p className="text-sm font-bold">AI Neural Engine v11.0</p>
                 </div>
               </div>
               <LanguageSelector
