@@ -8,7 +8,7 @@ import Home from "@/pages/Home";
 
 function AppRouter() {
   return (
-    <Router base="/Asset-Tracker">
+    <Router base="">
       <Switch>
         <Route path="/" component={Home} />
         <Route component={NotFound} />
