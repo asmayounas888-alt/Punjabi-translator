@@ -12,8 +12,8 @@ export function LanguageSelector({ targetLang, setTargetLang, className }: Langu
     <div className={cn("flex items-center gap-2 p-1.5", className)}>
 
       <div className="px-5 py-2 group flex items-center gap-2 cursor-default">
-        <span className="text-[10px] font-black uppercase text-white tracking-widest leading-none">Punjabi</span>
-        <span className="text-[8px] font-black uppercase text-primary/50 leading-none px-1.5 py-0.5 rounded-sm bg-primary/10 border border-primary/20">Auto</span>
+        <span className="text-[10px] font-black uppercase text-white tracking-widest leading-none">Auto-Detect</span>
+        <span className="text-[8px] font-black uppercase text-primary/50 leading-none px-1.5 py-0.5 rounded-sm bg-primary/10 border border-primary/20">Script</span>
       </div>
 
       <div className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center text-white/20">

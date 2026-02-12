@@ -25,7 +25,7 @@ export default function Home() {
     if (!text.trim()) {
       toast({
         title: "Input required",
-        description: "Please enter some Gurmukhi text to begin.",
+        description: "Please enter some Gurmukhi or Shahmukhi text to begin.",
         variant: "destructive",
       });
       return;
@@ -100,7 +100,7 @@ export default function Home() {
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">Punjabi Transliteration Engine</h2>
             <p className="text-muted-foreground max-w-xl mx-auto">
-              A high-precision real-time transliteration tool designed to convert Gurmukhi script into English and Urdu with semantic awareness.
+              A high-precision real-time transliteration tool designed to convert Gurmukhi and Shahmukhi scripts into English and Urdu with semantic awareness.
             </p>
           </div>
 
@@ -126,7 +126,7 @@ export default function Home() {
               {/* Input Section */}
               <div className="p-8 flex flex-col relative">
                 <div className="flex justify-between items-center mb-6">
-                  <span className="text-xs font-black text-white/40 uppercase tracking-[0.2em]">Source (Gurmukhi)</span>
+                  <span className="text-xs font-black text-white/40 uppercase tracking-[0.2em]">Source (Punjabi Script)</span>
                   {text && (
                     <button
                       onClick={clearText}
@@ -138,7 +138,7 @@ export default function Home() {
                 </div>
 
                 <Textarea
-                  placeholder="ਸਤਿ ਸ੍ਰੀ ਅਕਾਲ..."
+                  placeholder="ਸਤਿ ਸ੍ਰੀ ਅਕਾਲ... / سُنج مسنجا..."
                   className="flex-1 w-full resize-none border-0 p-0 text-2xl md:text-3xl leading-relaxed bg-transparent focus-visible:ring-0 placeholder:text-white/10 font-bold"
                   value={text}
                   onChange={(e) => setText(e.target.value)}
