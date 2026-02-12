@@ -11,7 +11,7 @@ function AppRouter() {
   return (
     <Router hook={useHashLocation}>
       <Switch>
-        {/* Set Home as the absolute default for any path */}
+        {/* With Hash routing, the root is always / regardless of the folder name */}
         <Route path="/" component={Home} />
         <Route component={Home} />
       </Switch>
