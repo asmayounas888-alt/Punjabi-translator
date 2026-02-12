@@ -115,7 +115,7 @@ export default function Home() {
                 </div>
                 <div className="text-left">
                   <p className="text-xs font-bold text-muted-foreground uppercase tracking-tighter">Powered by</p>
-                  <p className="text-sm font-bold">NLP Engine v1.0</p>
+                  <p className="text-sm font-bold">NLP Engine v9.0</p>
                 </div>
               </div>
               <LanguageSelector
