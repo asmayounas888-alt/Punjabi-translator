@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { Header } from "@/components/Header";
 import { LanguageSelector } from "@/components/LanguageSelector";
 import { HistoryList } from "@/components/HistoryList";
@@ -144,7 +144,7 @@ export default function Home() {
                   placeholder="ਸਤਿ ਸ੍ਰੀ ਅਕਾਲ... / سُنج مسنجا..."
                   className="flex-1 w-full resize-none border-0 p-0 text-2xl md:text-3xl leading-relaxed bg-transparent focus-visible:ring-0 placeholder:text-white/10 font-bold"
                   value={text}
-                  onChange={(e) => setText(e.target.value)}
+                  onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setText(e.target.value)}
                   spellCheck={false}
                 />
 

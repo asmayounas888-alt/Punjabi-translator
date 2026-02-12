@@ -1,18 +1,9 @@
-import { useHistory } from "@/hooks/use-translations";
-import { Clock, ArrowRight, Loader2, Sparkles, Database } from "lucide-react";
+import { useTranslate, Translation } from "@/hooks/use-translations";
+import { ArrowRight, Database, Sparkles } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 
 export function HistoryList() {
-  const { data: history, isLoading } = useHistory();
-
-  if (isLoading) {
-    return (
-      <div className="flex flex-col items-center justify-center p-20 gap-4">
-        <Loader2 className="w-10 h-10 animate-spin text-primary opacity-20" />
-        <p className="text-xs font-black uppercase text-white/10 tracking-widest">Loading Corpus Data</p>
-      </div>
-    );
-  }
+  const { history } = useTranslate();
 
   if (!history || history.length === 0) {
     return (
@@ -31,7 +22,7 @@ export function HistoryList() {
   return (
     <div className="space-y-6">
       <div className="grid gap-4">
-        {history.map((item) => (
+        {history.map((item: Translation) => (
           <div
             key={item.id}
             className="group glass p-6 rounded-3xl transition-all duration-500 hover:bg-white/[0.08] hover:-translate-y-1 relative overflow-hidden"
@@ -43,15 +34,15 @@ export function HistoryList() {
             <div className="flex flex-wrap items-center justify-between gap-4 mb-6 relative z-10">
               <div className="flex items-center gap-3">
                 <div className="px-3 py-1 rounded-lg bg-primary/10 border border-primary/20 text-[10px] font-black text-primary uppercase tracking-widest">
-                  {item.sourceLang}
+                  Punjabi
                 </div>
                 <ArrowRight className="w-3 h-3 text-white/20" />
                 <div className="px-3 py-1 rounded-lg bg-white/5 border border-white/10 text-[10px] font-black text-muted-foreground uppercase tracking-widest">
-                  {item.targetLang}
+                  {item.targetLanguage}
                 </div>
               </div>
               <span className="text-[10px] font-bold text-muted-foreground tracking-widest uppercase">
-                {item.createdAt && formatDistanceToNow(new Date(item.createdAt), { addSuffix: true })}
+                {item.timestamp && formatDistanceToNow(new Date(item.timestamp), { addSuffix: true })}
               </span>
             </div>
 
@@ -59,13 +50,13 @@ export function HistoryList() {
               <div className="space-y-2">
                 <p className="text-xs font-black text-white/20 uppercase tracking-widest">Origin</p>
                 <p className="text-lg font-bold text-muted-foreground line-clamp-3 leading-relaxed">
-                  {item.sourceText}
+                  {item.text}
                 </p>
               </div>
               <div className="space-y-2">
                 <p className="text-xs font-black text-primary uppercase tracking-widest">Transliteration</p>
                 <p className="text-xl font-bold text-white line-clamp-3 leading-relaxed">
-                  {item.translatedText}
+                  {item.translation}
                 </p>
               </div>
             </div>

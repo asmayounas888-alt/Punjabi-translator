@@ -15,7 +15,6 @@ async function translateNeural(text: string, targetLanguage: string): Promise<st
   const target = targetLanguage === 'urdu' ? 'ur' : 'en';
   // Detected script (Gurmukhi vs Shahmukhi)
   const isGurmukhi = /[\u0A00-\u0A7F]/.test(text);
-  const source = isGurmukhi ? 'pa' : 'pa'; // Standard Punjabi code
 
   try {
     const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=${target}&dt=t&q=${encodeURIComponent(text)}`;
